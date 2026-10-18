@@ -229,7 +229,13 @@ react-dom/cjs/react-dom.production.min.js:
 </script>
   <script>
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(function (registration) {
+          document.addEventListener("visibilitychange", function () {
+            if (document.visibilityState === "visible") registration.update().catch(function () {});
+          });
+        }).catch(function () {});
+      });
     }
   </script>
 </body>
